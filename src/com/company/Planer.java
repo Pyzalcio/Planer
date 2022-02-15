@@ -21,6 +21,15 @@ public class Planer extends JFrame
         createEditMenu();
         createCloseMenu();
     }
+    private void init()
+    {
+        this.setJMenuBar(menuBar);
+        northPanel.add(dateLabel);
+        this.getContentPane().add(northPanel, BorderLayout.NORTH);
+        this.getContentPane().add(centralPanel, BorderLayout.CENTER);
+        this.getContentPane().add(southPanel, BorderLayout.SOUTH);
+        createCalendar();
+    }
     private void createFileMenu()
     {
         JMenu file = menuBar.add(new JMenu("Plik"));
@@ -42,13 +51,23 @@ public class Planer extends JFrame
         JMenuItem onlyClose = close.add(new JMenuItem("Zamknij bez zapisywania"));
         JMenuItem saveAndClose = close.add(new JMenuItem("Zapisz i zamknij"));
     }
-    private void init()
+    private void createCalendar()
     {
-        this.setJMenuBar(menuBar);
-        northPanel.add(dateLabel);
-        this.getContentPane().add(northPanel, BorderLayout.NORTH);
-        this.getContentPane().add(centralPanel, BorderLayout.CENTER);
-        this.getContentPane().add(southPanel, BorderLayout.SOUTH);
+        centralPanel.setLayout(new GridLayout(6, 7));
+        int dayInActualMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.set(Calendar.DATE, 1);
+        int fristDay = calendar.get(Calendar.DAY_OF_WEEK);
+        System.out.println(dayInActualMonth);
+        System.out.println(fristDay);
+        for(int i=0; i<42; i++)
+        {
+            if(i<fristDay-2)
+                centralPanel.add(new JButton(String.valueOf(i+23+fristDay)));
+            else if(i>dayInActualMonth)
+                centralPanel.add(new JButton(String.valueOf(i-dayInActualMonth)));
+            else
+                centralPanel.add(new JButton(String.valueOf(i-fristDay+3)));
+        }
     }
 
     private GregorianCalendar calendar = (GregorianCalendar) new GregorianCalendar().clone();
