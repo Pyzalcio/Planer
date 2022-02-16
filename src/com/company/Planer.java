@@ -2,6 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -24,10 +26,11 @@ public class Planer extends JFrame
     private void init()
     {
         this.setJMenuBar(menuBar);
-        northPanel.add(dateLabel);
         this.getContentPane().add(northPanel, BorderLayout.NORTH);
         this.getContentPane().add(centralPanel, BorderLayout.CENTER);
         this.getContentPane().add(southPanel, BorderLayout.SOUTH);
+        centralPanel.setLayout(new GridLayout(6, 7));
+        createNorthPanel();
         createCalendar();
     }
     private void createFileMenu()
@@ -51,27 +54,89 @@ public class Planer extends JFrame
         JMenuItem onlyClose = close.add(new JMenuItem("Zamknij bez zapisywania"));
         JMenuItem saveAndClose = close.add(new JMenuItem("Zapisz i zamknij"));
     }
+    private void createNorthPanel()
+    {
+        dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+        JButton lastMonthButton = new JButton("<");
+        JButton nextMonthButton = new JButton(">");
+        JButton lastYearButton = new JButton("<<");
+        JButton nextYearButton = new JButton(">>");
+        northPanel.add(lastYearButton);
+        northPanel.add(lastMonthButton);
+        northPanel.add(dateLabel);
+        northPanel.add(nextMonthButton);
+        northPanel.add(nextYearButton);
+        lastMonthButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(calendar.get(Calendar.MONTH)==0)
+                    calendar.roll(Calendar.YEAR, -1);
+                calendar.roll(Calendar.MONTH, -1);
+                centralPanel.removeAll();
+                createCalendar();
+                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+            }
+        });
+        nextMonthButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(calendar.get(Calendar.MONTH)==11)
+                    calendar.roll(Calendar.YEAR, 1);
+                calendar.roll(Calendar.MONTH, 1);
+                centralPanel.removeAll();
+                createCalendar();
+                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+            }
+        });
+        lastYearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                calendar.roll(Calendar.YEAR, -1);
+                centralPanel.removeAll();
+                createCalendar();
+                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+            }
+        });
+        nextYearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                calendar.roll(Calendar.YEAR, 1);
+                centralPanel.removeAll();
+                createCalendar();
+                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+            }
+        });
+    }
     private void createCalendar()
     {
-        centralPanel.setLayout(new GridLayout(6, 7));
+        System.out.println(calendar.get(Calendar.MONTH)+"."+calendar.get(Calendar.YEAR));
         int dayInActualMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         calendar.set(Calendar.DATE, 1);
-        int fristDay = calendar.get(Calendar.DAY_OF_WEEK);
-        System.out.println(dayInActualMonth);
-        System.out.println(fristDay);
-        for(int i=0; i<42; i++)
+        int fristDay = calendar.get(Calendar.DAY_OF_WEEK)-1;
+        calendar.roll(Calendar.MONTH, -1);
+        int dayInLastMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.roll(Calendar.MONTH, 1);
+        for(int i=1; i<=42; i++)
         {
-            if(i<fristDay-2)
-                centralPanel.add(new JButton(String.valueOf(i+23+fristDay)));
-            else if(i>dayInActualMonth)
-                centralPanel.add(new JButton(String.valueOf(i-dayInActualMonth)));
+            JButton dayButton = new JButton();
+            if(i<fristDay) {
+                dayButton.setText(String.valueOf(dayInLastMonth + i - (fristDay-1)));
+                dayButton.setEnabled(false);
+            }
+            else if( i >= (dayInActualMonth+fristDay) )
+            {
+                dayButton.setText(String.valueOf(i-dayInActualMonth-1));
+                dayButton.setEnabled(false);
+            }
             else
-                centralPanel.add(new JButton(String.valueOf(i-fristDay+3)));
+                dayButton.setText(String.valueOf(i-fristDay+1));
+
+            centralPanel.add(dayButton);
         }
     }
 
     private GregorianCalendar calendar = (GregorianCalendar) new GregorianCalendar().clone();
-    private JLabel dateLabel = new JLabel(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+    private JLabel dateLabel = new JLabel();
     private JPanel northPanel = new JPanel();
     private JPanel centralPanel = new JPanel();
     private JPanel southPanel = new JPanel();
