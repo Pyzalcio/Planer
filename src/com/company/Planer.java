@@ -2,8 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -66,45 +64,33 @@ public class Planer extends JFrame
         northPanel.add(dateLabel);
         northPanel.add(nextMonthButton);
         northPanel.add(nextYearButton);
-        lastMonthButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(calendar.get(Calendar.MONTH)==0)
-                    calendar.roll(Calendar.YEAR, -1);
-                calendar.roll(Calendar.MONTH, -1);
-                centralPanel.removeAll();
-                createCalendar();
-                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
-            }
-        });
-        nextMonthButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(calendar.get(Calendar.MONTH)==11)
-                    calendar.roll(Calendar.YEAR, 1);
-                calendar.roll(Calendar.MONTH, 1);
-                centralPanel.removeAll();
-                createCalendar();
-                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
-            }
-        });
-        lastYearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        lastMonthButton.addActionListener(e -> {
+            if(calendar.get(Calendar.MONTH)==Calendar.JANUARY)
                 calendar.roll(Calendar.YEAR, -1);
-                centralPanel.removeAll();
-                createCalendar();
-                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
-            }
+            calendar.roll(Calendar.MONTH, -1);
+            centralPanel.removeAll();
+            createCalendar();
+            dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
         });
-        nextYearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        nextMonthButton.addActionListener(e -> {
+            if(calendar.get(Calendar.MONTH)==Calendar.DECEMBER)
                 calendar.roll(Calendar.YEAR, 1);
-                centralPanel.removeAll();
-                createCalendar();
-                dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
-            }
+            calendar.roll(Calendar.MONTH, 1);
+            centralPanel.removeAll();
+            createCalendar();
+            dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+        });
+        lastYearButton.addActionListener(e -> {
+            calendar.roll(Calendar.YEAR, -1);
+            centralPanel.removeAll();
+            createCalendar();
+            dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
+        });
+        nextYearButton.addActionListener(e -> {
+            calendar.roll(Calendar.YEAR, 1);
+            centralPanel.removeAll();
+            createCalendar();
+            dateLabel.setText(calendar.get(Calendar.DATE)+"."+(calendar.get(Calendar.MONTH)+1)+"."+calendar.get(Calendar.YEAR));
         });
     }
     private void createCalendar()
@@ -135,7 +121,7 @@ public class Planer extends JFrame
         }
     }
 
-    private GregorianCalendar calendar = (GregorianCalendar) new GregorianCalendar().clone();
+    private GregorianCalendar calendar = new GregorianCalendar();
     private JLabel dateLabel = new JLabel();
     private JPanel northPanel = new JPanel();
     private JPanel centralPanel = new JPanel();
