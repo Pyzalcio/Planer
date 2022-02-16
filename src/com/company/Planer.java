@@ -2,6 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -43,6 +45,7 @@ public class Planer extends JFrame
     {
         JMenu edit = menuBar.add(new JMenu("Edytuj"));
         JMenuItem addTask = edit.add(new JMenuItem("Dodaj zadanie"));
+        addTask.addActionListener(e -> new AddTask().setVisible(true));
         JMenuItem editTask = edit.add(new JMenuItem("Edytuj zadanie"));
         JMenuItem delTask = edit.add(new JMenuItem("Usuń zadanie"));
     }
@@ -95,7 +98,6 @@ public class Planer extends JFrame
     }
     private void createCalendar()
     {
-        System.out.println(calendar.get(Calendar.MONTH)+"."+calendar.get(Calendar.YEAR));
         int dayInActualMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         calendar.set(Calendar.DATE, 1);
         int fristDay = calendar.get(Calendar.DAY_OF_WEEK)-1;
