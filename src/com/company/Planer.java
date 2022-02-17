@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,12 +37,47 @@ public class Planer extends JFrame
         createCalendar();
         createTaskPanel();
     }
+
+    private class SaveFileListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                SaveFile.save(fileName, taskList);
+                new NewDialog(thisFrame, "Zapis", "Zapisano poprawnie").setVisible(true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                new NewDialog(thisFrame, "Zapis", "Błąd zapisu").setVisible(true);
+            }
+        }
+    }
+    void readFileMethod()
+    {
+        try {
+            FileDialog fd = new FileDialog(thisFrame,"Wczytaj",FileDialog.LOAD);
+            fd.setVisible(true);
+            fileName=fd.getDirectory()+"/"+fd.getFile();
+            ReadFile readFile = new ReadFile();
+            readFile.read(fileName);
+            new NewDialog(thisFrame, "Odczyt", "Wczytano poprawnie").setVisible(true);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            new NewDialog(thisFrame, "Odczyt", "Błąd odczytu").setVisible(true);
+        }
+    }
+
     private void createFileMenu()
     {
         JMenu file = menuBar.add(new JMenu("Plik"));
         JMenuItem newFile = file.add(new JMenuItem("Nowy"));
+        newFile.addActionListener(e -> {
+            taskList.clear();
+            fileName = "nowyPlaner.txt";
+        });
         JMenuItem readFile = file.add(new JMenuItem("Wczytaj"));
+        readFile.addActionListener(e -> readFileMethod());
         JMenuItem saveFile = file.add(new JMenuItem("Zapisz"));
+        saveFile.addActionListener(new SaveFileListener());
         JMenuItem saveAsFile = file.add(new JMenuItem("Zapisz jako..."));
     }
     private void createEditMenu()
@@ -170,7 +206,7 @@ public class Planer extends JFrame
         taskList.add(task);
         System.out.println("Dodano zadanie: "+task.getTaskDesc()+": "+task.getDay()+"."+task.getMonth()+"."+task.getYear());
     }
-    class Task
+    static class Task
     {
         String taskDesc;
         int year;
@@ -210,6 +246,7 @@ public class Planer extends JFrame
         }
     }
 
+    private JFrame thisFrame = this;
     private GregorianCalendar calendar = new GregorianCalendar();
     private JLabel dateLabel = new JLabel();
     private JPanel northPanel = new JPanel();
@@ -218,6 +255,7 @@ public class Planer extends JFrame
     private JMenuBar menuBar = new JMenuBar();
     private JLabel southLabel = new JLabel("Brak zadań w wybranym dniu");
     private static List<Task> taskList = new ArrayList();
+    private String fileName = "nowyPlaner.txt";
 
     public static void main(String[] args) {
         new Planer().setVisible(true);

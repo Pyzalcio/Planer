@@ -2,8 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Main extends JFrame
 {
@@ -24,12 +22,15 @@ public class Main extends JFrame
         panel.add(newButton);
         panel.add(readButton);
         this.getContentPane().add(panel, BorderLayout.CENTER);
-        newButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                thisFrame.dispose();
-                new Planer().setVisible(true);
-            }
+        newButton.addActionListener(e -> {
+            thisFrame.dispose();
+            new Planer().setVisible(true);
+        });
+        readButton.addActionListener(e -> {
+            thisFrame.dispose();
+            Planer planer = new Planer();
+            planer.readFileMethod();
+            planer.setVisible(true);
         });
     }
 
