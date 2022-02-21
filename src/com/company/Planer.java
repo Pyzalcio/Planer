@@ -37,18 +37,14 @@ public class Planer extends JFrame
         createCalendar();
         createTaskPanel();
     }
-
-    private class SaveFileListener implements ActionListener
+    void saveFileMethod()
     {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                SaveFile.save(fileName, taskList);
-                new NewDialog(thisFrame, "Zapis", "Zapisano poprawnie").setVisible(true);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                new NewDialog(thisFrame, "Zapis", "Błąd zapisu").setVisible(true);
-            }
+        try {
+            SaveFile.save(fileName, taskList);
+            new NewDialog(thisFrame, "Zapis", "Zapisano poprawnie").setVisible(true);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            new NewDialog(thisFrame, "Zapis", "Błąd zapisu").setVisible(true);
         }
     }
     void readFileMethod()
@@ -77,8 +73,14 @@ public class Planer extends JFrame
         JMenuItem readFile = file.add(new JMenuItem("Wczytaj"));
         readFile.addActionListener(e -> readFileMethod());
         JMenuItem saveFile = file.add(new JMenuItem("Zapisz"));
-        saveFile.addActionListener(new SaveFileListener());
+        saveFile.addActionListener(e -> saveFileMethod());
         JMenuItem saveAsFile = file.add(new JMenuItem("Zapisz jako..."));
+        saveAsFile.addActionListener(e -> {
+            FileDialog fd = new FileDialog(thisFrame,"Zapisz",FileDialog.SAVE);
+            fd.setVisible(true);
+            fileName=fd.getDirectory()+"/"+fd.getFile();
+            saveFileMethod();
+        });
     }
     private void createEditMenu()
     {
@@ -192,6 +194,7 @@ public class Planer extends JFrame
         if(tempList.size()>0)
         {
             southLabel.setText("Zadania w wybranym dniu: ");
+            southPanel.setLayout(new GridLayout(tempList.size()+1, 1));
             for (Task task : tempList) {
                 southPanel.add(new JLabel(task.getTaskDesc()));
             }
