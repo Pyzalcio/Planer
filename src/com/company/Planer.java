@@ -49,16 +49,20 @@ public class Planer extends JFrame
     }
     void readFileMethod()
     {
+        String statement = null;
         try {
             FileDialog fd = new FileDialog(thisFrame,"Wczytaj",FileDialog.LOAD);
             fd.setVisible(true);
             fileName=fd.getDirectory()+"/"+fd.getFile();
             ReadFile readFile = new ReadFile();
             readFile.read(fileName);
-            new NewDialog(thisFrame, "Odczyt", "Wczytano poprawnie").setVisible(true);
+            statement = "Wczytano poprawnie";
         } catch (IOException ex) {
             ex.printStackTrace();
-            new NewDialog(thisFrame, "Odczyt", "Błąd odczytu").setVisible(true);
+            statement = "Błąd odczytu";
+        }
+        finally {
+            new NewDialog(thisFrame, "Odczyt", statement).setVisible(true);
         }
     }
 
@@ -96,12 +100,21 @@ public class Planer extends JFrame
             });
         JMenuItem editTask = edit.add(new JMenuItem("Edytuj zadanie"));
         JMenuItem delTask = edit.add(new JMenuItem("Usuń zadanie"));
+        delTask.addActionListener(e -> {
+            DelTask newdelTask = new DelTask(taskList, calendar);
+            newdelTask.setVisible(true);
+        });
     }
     private void createCloseMenu()
     {
         JMenu close = menuBar.add(new JMenu("Zamknij"));
         JMenuItem onlyClose = close.add(new JMenuItem("Zamknij bez zapisywania"));
+        onlyClose.addActionListener(e -> thisFrame.dispose());
         JMenuItem saveAndClose = close.add(new JMenuItem("Zapisz i zamknij"));
+        saveAndClose.addActionListener(e -> {
+            saveFileMethod();
+            thisFrame.dispose();
+        });
     }
     private void createNorthPanel()
     {
@@ -181,9 +194,10 @@ public class Planer extends JFrame
     }
     private void createTaskPanel()
     {
+        southPanel.setLayout(new FlowLayout());
         southPanel.removeAll();
         southPanel.repaint();
-        List<Task> tempList = new ArrayList();
+        List<Task> tempList = new ArrayList<>();
         southPanel.add(southLabel);
         for (Task task : taskList) {
             if (task.getYear() == calendar.get(Calendar.YEAR) &&
@@ -257,7 +271,7 @@ public class Planer extends JFrame
     private JPanel southPanel = new JPanel();
     private JMenuBar menuBar = new JMenuBar();
     private JLabel southLabel = new JLabel("Brak zadań w wybranym dniu");
-    private static List<Task> taskList = new ArrayList();
+    private static List<Task> taskList = new ArrayList<>();
     private String fileName = "nowyPlaner.txt";
 
     public static void main(String[] args) {
