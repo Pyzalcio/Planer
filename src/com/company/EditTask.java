@@ -7,11 +7,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
-public class DelTask extends JFrame
+public class EditTask extends JFrame
 {
-    public DelTask(List<Planer.Task> taskList, GregorianCalendar calendar)
+    public EditTask(List<Planer.Task> taskList, GregorianCalendar calendar)
     {
-        this.setTitle("Usuń zadanie");
+        this.setTitle("Edytuj zadanie");
         int x = Toolkit.getDefaultToolkit().getScreenSize().width;
         int y = Toolkit.getDefaultToolkit().getScreenSize().height;
         int width = x/4;
@@ -31,20 +31,22 @@ public class DelTask extends JFrame
                     && temp.getMonth() == calendar.get(Calendar.MONTH)+1
                     && temp.getDay() == calendar.get(Calendar.DATE))
             {
-                comboBox.addItem(new SelectTask(j++, i, temp.getTaskDesc()));
+                comboBox.addItem(new DelTask.SelectTask(j++, i, temp.getTaskDesc()));
             }
         }
 
-        buttonDel.addActionListener(e -> {
-            int idToRemove = ((SelectTask)(Objects.requireNonNull(comboBox.getSelectedItem()))).getId();
-            String statement = "Usunięto zadanie: " + ((SelectTask)(comboBox.getSelectedItem())).getDesc();
-            new NewDialog(thisFrame, "Usuwanie", statement).setVisible(true);
-            taskList.remove(idToRemove);
+        buttonEdit.addActionListener(e -> {
+            int idToEdit = ((DelTask.SelectTask)(Objects.requireNonNull(comboBox.getSelectedItem()))).getId();
+            String statement = "Edytowano zadanie: " + ((DelTask.SelectTask)(comboBox.getSelectedItem())).getDesc();
+            new NewDialog(thisFrame, "Edycja", statement).setVisible(true);
+            taskList.get(idToEdit).setTaskDesc(taskText.getText());
             thisFrame.dispose();
         });
         centerPanel.add(comboBox);
-        buttonPanel.add(buttonDel);
-        this.getContentPane().add(centerPanel, BorderLayout.CENTER);
+        buttonPanel.add(buttonEdit);
+        textPanel.add(scrollPane);
+        this.getContentPane().add(centerPanel, BorderLayout.NORTH);
+        this.getContentPane().add(textPanel, BorderLayout.CENTER);
         this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         if(comboBox.getItemCount()==0)
         {
@@ -55,40 +57,15 @@ public class DelTask extends JFrame
             thisFrame.setVisible(true);
     }
 
-    private JComboBox<SelectTask> comboBox = new JComboBox<>();
+    private JComboBox<DelTask.SelectTask> comboBox = new JComboBox<>();
     private JPanel centerPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
-    private JButton buttonDel = new JButton("Usuń");
+    private JPanel textPanel = new JPanel();
+    private JTextArea taskText = new JTextArea(20, 30);
+    private JScrollPane scrollPane = new JScrollPane(taskText);
+    private JButton buttonEdit = new JButton("Edytuj");
     private JFrame thisFrame = this;
 
-    static class SelectTask
-    {
-        private int number;
-        private int id;
-        private String desc;
-        SelectTask(int number, int id, String desc)
-        {
-            this.number = number;
-            this.id = id;
-            this.desc = desc;
-        }
-        public String toString()
-        {
-            return number+". "+desc;
-        }
-        public int getId()
-        {
-            return id;
-        }
-        public int getNumber()
-        {
-            return number;
-        }
-        public String getDesc()
-        {
-            return desc;
-        }
-    }
     public static void main(String[] args) {
     }
 }

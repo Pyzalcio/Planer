@@ -57,6 +57,8 @@ public class Planer extends JFrame
             ReadFile readFile = new ReadFile();
             readFile.read(fileName);
             statement = "Wczytano poprawnie";
+            saveFile.setEnabled(true);
+            saveAndClose.setEnabled(true);
         } catch (IOException ex) {
             ex.printStackTrace();
             statement = "Błąd odczytu";
@@ -72,12 +74,15 @@ public class Planer extends JFrame
         JMenuItem newFile = file.add(new JMenuItem("Nowy"));
         newFile.addActionListener(e -> {
             taskList.clear();
-            fileName = "nowyPlaner.txt";
+            fileName = null;
+            saveFile.setEnabled(false);
+            saveAndClose.setEnabled(false);
         });
         JMenuItem readFile = file.add(new JMenuItem("Wczytaj"));
         readFile.addActionListener(e -> readFileMethod());
-        JMenuItem saveFile = file.add(new JMenuItem("Zapisz"));
+        saveFile = file.add(new JMenuItem("Zapisz"));
         saveFile.addActionListener(e -> saveFileMethod());
+        saveFile.setEnabled(fileName != null);
         JMenuItem saveAsFile = file.add(new JMenuItem("Zapisz jako..."));
         saveAsFile.addActionListener(e -> {
             FileDialog fd = new FileDialog(thisFrame,"Zapisz",FileDialog.SAVE);
@@ -99,10 +104,24 @@ public class Planer extends JFrame
             task.setDay(calendar.get(Calendar.DATE));
             });
         JMenuItem editTask = edit.add(new JMenuItem("Edytuj zadanie"));
+        editTask.addActionListener(e -> {
+            if(taskList.size()<1)
+            {
+                new NewDialog(thisFrame, "Brak zadań", "Nie ma żadnych zadań").setVisible(true);
+            }
+            else {
+                EditTask newEditTask = new EditTask(taskList, calendar);
+            }
+        });
         JMenuItem delTask = edit.add(new JMenuItem("Usuń zadanie"));
         delTask.addActionListener(e -> {
-            DelTask newdelTask = new DelTask(taskList, calendar);
-            newdelTask.setVisible(true);
+            if(taskList.size()<1)
+            {
+                new NewDialog(thisFrame, "Brak zadań", "Nie ma żadnych zadań").setVisible(true);
+            }
+            else {
+                DelTask newdelTask = new DelTask(taskList, calendar);
+            }
         });
     }
     private void createCloseMenu()
@@ -110,11 +129,12 @@ public class Planer extends JFrame
         JMenu close = menuBar.add(new JMenu("Zamknij"));
         JMenuItem onlyClose = close.add(new JMenuItem("Zamknij bez zapisywania"));
         onlyClose.addActionListener(e -> thisFrame.dispose());
-        JMenuItem saveAndClose = close.add(new JMenuItem("Zapisz i zamknij"));
+        saveAndClose = close.add(new JMenuItem("Zapisz i zamknij"));
         saveAndClose.addActionListener(e -> {
             saveFileMethod();
             thisFrame.dispose();
         });
+        saveAndClose.setEnabled(fileName != null);
     }
     private void createNorthPanel()
     {
@@ -272,7 +292,10 @@ public class Planer extends JFrame
     private JMenuBar menuBar = new JMenuBar();
     private JLabel southLabel = new JLabel("Brak zadań w wybranym dniu");
     private static List<Task> taskList = new ArrayList<>();
-    private String fileName = "nowyPlaner.txt";
+    private String fileName = null;
+
+    private JMenuItem saveFile;
+    private JMenuItem saveAndClose;
 
     public static void main(String[] args) {
         new Planer().setVisible(true);
