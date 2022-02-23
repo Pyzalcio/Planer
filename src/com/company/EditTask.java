@@ -2,8 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -21,6 +19,7 @@ public class EditTask extends JFrame
         this.setBounds(x/2-width/2, y/2-height/2, width, height);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         init(taskList, calendar);
+        //pack();
     }
     private void init(List<Planer.Task> taskList, GregorianCalendar calendar)
     {
