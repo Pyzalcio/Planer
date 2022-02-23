@@ -13,7 +13,9 @@ public class SaveFile
         Planer.Task tempTask;
         for (Planer.Task task : taskList) {
             tempTask = task;
-            writer.write(tempTask.getTaskDesc() + "." + tempTask.getYear() + "." + tempTask.getMonth() + "." + tempTask.getDay());
+            writer.write(tempTask.getTaskDesc() + "." + tempTask.getYear()
+                    + "." + tempTask.getMonth() + "." + tempTask.getDay()
+                    + "." + tempTask.getHour() + "." + tempTask.getMinute());
             writer.newLine();
         }
         writer.close();

@@ -229,8 +229,18 @@ public class Planer extends JFrame
         {
             southLabel.setText("Zadania w wybranym dniu: ");
             southPanel.setLayout(new GridLayout(tempList.size()+1, 1));
+            String hour;
+            String minute;
             for (Task task : tempList) {
-                southPanel.add(new JLabel(task.getTaskDesc()));
+                if(task.getHour()<10)
+                    hour = "0"+task.getHour();
+                else
+                    hour = String.valueOf(task.getHour());
+                if(task.getMinute()<10)
+                    minute = "0"+task.getMinute();
+                else
+                    minute = String.valueOf(task.getMinute());
+                southPanel.add(new JLabel(hour+":"+minute+ " " + task.getTaskDesc()));
             }
         }
         else
@@ -241,7 +251,8 @@ public class Planer extends JFrame
     static void addTask(Task task)
     {
         taskList.add(task);
-        System.out.println("Dodano zadanie: "+task.getTaskDesc()+": "+task.getDay()+"."+task.getMonth()+"."+task.getYear());
+        System.out.println("Dodano zadanie: "+task.getTaskDesc()+": "+task.getDay()+"."+task.getMonth()
+                +"."+task.getYear() + ", o godzinie "+task.getHour()+":"+task.getMinute());
     }
     static class Task
     {
@@ -249,6 +260,8 @@ public class Planer extends JFrame
         int year;
         int month;
         int day;
+        int hour;
+        int minute;
 
         public String getTaskDesc() {
             return taskDesc;
@@ -280,6 +293,22 @@ public class Planer extends JFrame
 
         public void setDay(int day) {
             this.day = day;
+        }
+
+        public int getHour() {
+            return hour;
+        }
+
+        public void setHour(int hour) {
+            this.hour = hour;
+        }
+
+        public int getMinute() {
+            return minute;
+        }
+
+        public void setMinute(int minute) {
+            this.minute = minute;
         }
     }
 

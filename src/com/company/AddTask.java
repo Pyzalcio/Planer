@@ -2,6 +2,7 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class AddTask extends JFrame
 {
@@ -20,19 +21,41 @@ public class AddTask extends JFrame
     {
         textPanel.add(scrollPane);
         buttonPanel.add(buttonAdd);
+        comboPanel.add(comboBoxHour);
+        comboPanel.add(comboBoxMinute);
+        for(int i=0; i<24; i++)
+        {
+            if(i<10)
+                comboBoxHour.addItem("0"+i);
+            else
+                comboBoxHour.addItem(i+"");
+        }
+        for (int i=0; i<60; i++)
+        {
+            if(i<10)
+                comboBoxMinute.addItem("0"+i);
+            else
+                comboBoxMinute.addItem(i+"");
+        }
         buttonAdd.addActionListener(e -> {
             task.setTaskDesc(taskText.getText());
             Planer.addTask(task);
+            task.setHour(Integer.parseInt((String) Objects.requireNonNull(comboBoxHour.getSelectedItem())));
+            task.setMinute(Integer.parseInt((String) Objects.requireNonNull(comboBoxMinute.getSelectedItem())));
             thisFrame.dispose();
         });
+        this.getContentPane().add(comboPanel, BorderLayout.NORTH);
         this.getContentPane().add(textPanel, BorderLayout.CENTER);
         this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         scrollPane.createVerticalScrollBar();
         scrollPane.createHorizontalScrollBar();
     }
 
+    private JPanel comboPanel = new JPanel();
     private JPanel textPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
+    private JComboBox<String> comboBoxHour = new JComboBox<>();
+    private JComboBox<String> comboBoxMinute = new JComboBox<>();
     private JTextArea taskText = new JTextArea(20, 30);
     private JScrollPane scrollPane = new JScrollPane(taskText);
     private JButton buttonAdd = new JButton("Dodaj");
