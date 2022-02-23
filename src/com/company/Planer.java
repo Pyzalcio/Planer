@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.*;
 import java.util.List;
 
 public class Planer extends JFrame
@@ -225,6 +223,7 @@ public class Planer extends JFrame
                     task.getDay() == calendar.get(Calendar.DATE))
                 tempList.add(task);
         }
+        Collections.sort(tempList);
         if(tempList.size()>0)
         {
             southLabel.setText("Zadania w wybranym dniu: ");
@@ -254,7 +253,7 @@ public class Planer extends JFrame
         System.out.println("Dodano zadanie: "+task.getTaskDesc()+": "+task.getDay()+"."+task.getMonth()
                 +"."+task.getYear() + ", o godzinie "+task.getHour()+":"+task.getMinute());
     }
-    static class Task
+    static class Task implements Comparable<Task>
     {
         String taskDesc;
         int year;
@@ -309,6 +308,21 @@ public class Planer extends JFrame
 
         public void setMinute(int minute) {
             this.minute = minute;
+        }
+
+        @Override
+        public int compareTo(Task o) {
+            if( this.hour > o.getHour() )
+                return 1;
+            if( this.hour == o.getHour() )
+            {
+                if( this.minute > o.getMinute() )
+                    return 1;
+                else
+                    return -1;
+            }
+            else
+                return -1;
         }
     }
 
